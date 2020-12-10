@@ -1,15 +1,16 @@
 import * as THREE from "../build/three.module.js";
 import { GLTFLoader } from "./jsm/loaders/GLTFLoader.js";
 
+const mouse = new THREE.Vector2();
 let container;
 let camera;
 let renderer;
 let scene;
-let controls;
+let txt1;
+let rock;
 let input;
 let updateFcts = [];
-let delta;
-let lateralMove;
+
 
 function init() {
   //////////////////////////////
@@ -45,23 +46,6 @@ function init() {
 
   renderer.setPixelRatio(window.devicePixelRatio);
   container.appendChild(renderer.domElement);
-
-  ////////////
-  // SHADOW //
-  ////////////
-  //renderer.shadowMap.enabled = true;
-  //light1.castShadow = true;
-
-  ////////////////////
-  // ORBIT CONTROLS //
-  ////////////////////
-  /*
-  controls = new OrbitControls(camera, renderer.domElement);
-  controls.enabled = true;
-  controls.minDistance = 5;
-  controls.maxDistance = 3000;
-*/
-  //controls.maxDistance = 500;
 
   /////////////
   // GROUND  //
@@ -246,6 +230,100 @@ function init() {
     return lines;
   }
 
+
+ ////////////
+  //  ROCK  //
+  ////////////
+
+
+  const rload = new GLTFLoader();
+  let xr = 180;
+  let zr = 100;
+  let yr = THREEx.Terrain.planeToHeightMapCoords(
+    heightMap,
+    ground,
+    xr,
+    zr
+  );
+  rload.load("../src/rock/scene.gltf", (gltf) => {
+    rock = gltf.scene;
+    rock.scale.set(17, 17, 17);
+    rock.position.set(xr, yr , zr);
+    rock.rotateY(Math.PI*1.3)
+    scene.add(rock);
+  });
+
+  const txtloader1 = new THREE.FontLoader();
+  txtloader1.load("../src/fonts/gothic.json", (font) => {
+    let xtxt1 = 0;
+    let ztxt1 = 300;
+    let ytxt1 = THREEx.Terrain.planeToHeightMapCoords(
+      heightMap,
+      ground,
+      xtxt1,
+      ztxt1
+    )+100;
+
+
+    const text1 = "Name Me:";
+    const geometryText1 = new THREE.TextBufferGeometry(text1, {
+      font: font,
+      size: 13,
+      height: 1.3,
+      curveSegments: 10,
+      bevelEnabled: false,
+    });
+    var materialText1 = new THREE.MeshPhongMaterial({ color: new THREE.Color(0xf30ef7) });
+    
+    txt1 = new THREE.Mesh(geometryText1, materialText1);
+    txt1.position.set(xtxt1, ytxt1, ztxt1);
+    txt1.rotateY(Math.PI/1.3);
+    scene.add(txt1);
+  });
+
+  window.namedragon = function namedragon(){
+
+    scene.remove(txt1);
+    let nomedrago=document.getElementById("name").value;
+    const txtloader2 = new THREE.FontLoader();
+  txtloader2.load("../src/fonts/gothic.json", (font) => {
+    let xtxt2 = 0;
+    let ztxt2 = 300;
+    let ytxt2 = THREEx.Terrain.planeToHeightMapCoords(
+      heightMap,
+      ground,
+      xtxt2,
+      ztxt2
+    )+100;
+
+    const geometryText2 = new THREE.TextBufferGeometry(nomedrago, {
+      font: font,
+      size: 13,
+      height: 1.3,
+      curveSegments: 10,
+      bevelEnabled: false,
+    });
+    var materialText2 = new THREE.MeshPhongMaterial({ color: new THREE.Color(0x09fc05) });
+    
+    let txt1 = new THREE.Mesh(geometryText2, materialText2);
+    txt1.position.set(xtxt2, ytxt2, ztxt2);
+    txt1.rotateY(Math.PI/1.3);
+    scene.add(txt1);
+    
+  });
+  document.getElementById("block").style.visibility = "hidden";
+  }
+
+  var domEvents	= new THREEx.DomEvents(camera, renderer.domElement)
+  domEvents.addEventListener(drago, 'click', function(event){
+
+    document.getElementById("block").style.visibility = "visible";
+
+  }, false)
+
+
+
+
   ////////////
   //  TEXT  //
   ////////////
@@ -279,19 +357,6 @@ function init() {
   //  PLANE  //
   /////////////
 
-  var mixerContext = new THREEx.HtmlMixer.Context(renderer, scene, camera);
-
-  // create the iframe element
-  var url = "https://www.m0rbid.cloud/";
-  var domElement = THREEx.HtmlMixerHelpers.createIframeDomElement(url);
-
-  domElement.src = url;
-  //domElement.style.border = "none";
-
-  // create the plane
-  var mixerPlane = new THREEx.HtmlMixer.Plane(mixerContext, domElement);
-  mixerPlane.object3d.scale.set(18, 18, 18);
-  //scene.add(mixerPlane.object3d);
 
   //////////////////////////////
   //		camera 'object'				//
@@ -328,13 +393,12 @@ function init() {
   //////////////////////////////////////////////////////////////////////////////////
   //		render the scene						//
   //////////////////////////////////////////////////////////////////////////////////
-  updateFcts.push(function (delta, now) {
-    mixerContext.update(delta, now);
-  });
+
   // render the webgl
   updateFcts.push(function () {
-    renderer.render(scene, camera);
+    renderer.render( scene, camera );
   });
+
   //////////////////////////////////////////////////////////////////////////////////
   //		loop runner							//
   //////////////////////////////////////////////////////////////////////////////////
@@ -377,6 +441,7 @@ function init() {
     var deltaMsec = Math.min(200, nowMsec - lastTimeMsec);
     lastTimeMsec = nowMsec;
     // call each update function
+
 
     updateFcts.forEach(function (updateFn) {
       updateFn(deltaMsec / 1000, nowMsec / 1000);

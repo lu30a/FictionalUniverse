@@ -9,35 +9,29 @@
       content="width=device-width, height=device-height  , user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
     <link href="../styles/main.css" rel="stylesheet" type="text/css" />
-    <div
-      id="joyDiv"
-      style="
-        width: 150px;
-        height: 150px;
-        margin-bottom: 20px;
-        z-index: 2;
-        position: absolute;
-        bottom: 0px;
-        right: 20px;
-      "
-    ></div>
+    <div id="joyDiv" style="width: 150px; height: 150px; margin-bottom: 20px; z-index: 2; position: absolute; bottom: 0px; right: 20px;"></div>
   </head>
   <body>
     <div id="container"></div>
     <script src="build/three.min.js"></script>
-    <script src="./threex.domevents.js"></script>
-    <script src="./SimplexNoise.js"></script>
-    <script src="./threex.terrain.js"></script>
-    <script src="./threex.minecraftcontrols.js"></script>
-
-    <script src="./threex.atmospherematerial.js"></script>
+    <script src="./build/threex.domevents.js"></script>
+    <script src="./build/joy.js"></script>
+    <script src="./build/seedrandom.js"></script>
+    <script src="./build/SimplexNoise.js"></script>
+    <script src="./build/threex.terrain.js"></script>
+    <script src="./build/threex.minecraftcontrols.js"></script>
+    <script src="./build/threex.atmospherematerial.js"></script>
     <script src="jsm/renderers/CSS3DRenderer.js"></script>
-    <script src="./threex.htmlmixer.js"></script>
-    <script src="./threex.htmlmixerhelpers.js"></script>
-    <script src="./threex.daynight.js"></script>
-    <script src="./joy.js"></script>
-    <script src="./seedrandom.js"></script>
+    <script src="./build/threex.htmlmixer.js"></script>
+    <script src="./build/threex.daynight.js"></script>
+
+    <div id="block" style="background-color:black; z-index: 2; position: absolute; top: 30%; left: 30%; height: 30%; width: 35%;visibility:hidden;"> 
+    <input type="text" id="name" style="top: 30%;position: relative;"><br><br>
+    <input type="submit" value="Submit" style="top: 50px;position: relative;" onclick="namedragon()">
+    </div>
 
     <script src="./app.js" type="module"></script>
+
+
   </body>
 </html>
