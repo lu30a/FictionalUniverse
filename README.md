@@ -1,3 +1,3 @@
 # Fictional Universe
 
-Small Javascript/three.js word to move in.
+Small Javascript/three.js world to move in.
